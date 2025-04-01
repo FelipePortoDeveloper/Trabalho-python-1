@@ -4,7 +4,6 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 
-# Classes de domínio
 class Livro:
     def __init__(self, titulo, autor, publicacao, isbn, categoria, id_exemplar):
         self.titulo = titulo
@@ -14,7 +13,7 @@ class Livro:
         self.categoria = categoria
         self.id_exemplar = id_exemplar
         self.emprestado = False
-        self.emprestimos_count = 0  # Contador de empréstimos
+        self.emprestimos_count = 0 
 
 class Usuario:
     def __init__(self, nome, email, tipo):
@@ -22,7 +21,6 @@ class Usuario:
         self.email = email
         self.tipo = tipo
 
-# Classe que gerencia os dados da biblioteca
 class Biblioteca:
     def __init__(self, livros_arquivo="livros.txt", usuarios_arquivo="usuarios.txt", emprestimos_arquivo="emprestimos.txt"):
         self.livros_arquivo = livros_arquivo
@@ -80,7 +78,6 @@ class Biblioteca:
             messagebox.showerror("Erro", "Usuário não encontrado!")
             return
 
-        # Atualiza o status do livro e incrementa o contador de empréstimos
         livro["emprestado"] = True
         livro["emprestimos_count"] = livro.get("emprestimos_count", 0) + 1
         self.salvar_dados(self.livros_arquivo, livros)
@@ -159,7 +156,7 @@ class Biblioteca:
         if not livros:
             messagebox.showinfo("Livros mais Emprestados", "Nenhum livro cadastrado.")
             return
-        # Garante que todos tenham o contador
+
         for livro in livros:
             if "emprestimos_count" not in livro:
                 livro["emprestimos_count"] = 0
@@ -168,7 +165,6 @@ class Biblioteca:
         msg = "\n".join([f"{livro['titulo']} - {livro['emprestimos_count']} empréstimos" for livro in top_books])
         messagebox.showinfo("Livros Mais Emprestados", msg)
 
-# Interface gráfica com Notebook para separar as funcionalidades
 class BibliotecaApp:
     def __init__(self, root):
         self.biblioteca = Biblioteca()
@@ -181,22 +177,18 @@ class BibliotecaApp:
         notebook = ttk.Notebook(root)
         notebook.pack(expand=True, fill="both", padx=10, pady=10)
         
-        # Aba Livros
         self.frame_livros = ttk.Frame(notebook)
         notebook.add(self.frame_livros, text="Livros")
         self.create_livros_tab()
         
-        # Aba Usuários
         self.frame_usuarios = ttk.Frame(notebook)
         notebook.add(self.frame_usuarios, text="Usuários")
         self.create_usuarios_tab()
         
-        # Aba Empréstimos
         self.frame_emprestimos = ttk.Frame(notebook)
         notebook.add(self.frame_emprestimos, text="Empréstimos")
         self.create_emprestimos_tab()
         
-        # Aba Relatórios
         self.frame_relatorios = ttk.Frame(notebook)
         notebook.add(self.frame_relatorios, text="Relatórios")
         self.create_relatorios_tab()
@@ -206,7 +198,6 @@ class BibliotecaApp:
         title_lbl = ttk.Label(frame, text="Cadastro e Listagem de Livros", font=("Helvetica", 18, "bold"))
         title_lbl.pack(pady=10)
         
-        # Área de cadastro (sem o campo de ID, que é auto-incrementado)
         cadastro_frame = ttk.LabelFrame(frame, text="Cadastrar Livro")
         cadastro_frame.pack(fill="x", padx=20, pady=10)
         campos = ["Título", "Autor", "Publicação", "ISBN", "Categoria"]
@@ -223,7 +214,6 @@ class BibliotecaApp:
         btn_cadastrar = ttk.Button(cadastro_frame, text="Cadastrar Livro", command=self.cadastrar_livro)
         btn_cadastrar.pack(pady=10)
         
-        # Área de busca e listagem
         busca_frame = ttk.LabelFrame(frame, text="Buscar Livro")
         busca_frame.pack(fill="x", padx=20, pady=10)
         criterio_lbl = ttk.Label(busca_frame, text="Critério:", width=15, anchor="w")
@@ -240,7 +230,6 @@ class BibliotecaApp:
         btn_busca = ttk.Button(busca_frame, text="Buscar", command=self.buscar_livro)
         btn_busca.grid(row=2, column=0, columnspan=2, pady=10)
         
-        # Botão para listar todos os livros com Treeview
         btn_listar = ttk.Button(frame, text="Listar Todos os Livros", command=self.listar_todos_livros)
         btn_listar.pack(pady=10)
 
@@ -306,7 +295,7 @@ class BibliotecaApp:
         btn_mais_emprestados.pack(pady=10, padx=20, fill="x")
 
     def cadastrar_livro(self):
-        # Validação dos campos obrigatórios
+
         campos_obrigatorios = ["título", "autor", "publicação", "isbn", "categoria"]
         for campo in campos_obrigatorios:
             valor = self.livro_vars[campo].get().strip()
@@ -319,7 +308,7 @@ class BibliotecaApp:
         publicacao = self.livro_vars["publicação"].get().strip()
         isbn = self.livro_vars["isbn"].get().strip()
         categoria = self.livro_vars["categoria"].get().strip()
-        # Gera o próximo ID automaticamente
+
         id_exemplar = self.biblioteca.get_next_id()
         livro = Livro(titulo, autor, publicacao, isbn, categoria, id_exemplar)
         self.biblioteca.cadastra_livro(livro)
@@ -352,7 +341,7 @@ class BibliotecaApp:
         if not livros:
             messagebox.showinfo("Listar Livros", "Nenhum livro cadastrado.")
             return
-        # Cria uma janela para exibir a lista
+
         lista_win = tk.Toplevel(self.root)
         lista_win.title("Todos os Livros")
         lista_win.geometry("750x400")
