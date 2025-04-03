@@ -1,3 +1,4 @@
+import difflib
 import json
 from datetime import datetime
 import tkinter as tk
@@ -140,9 +141,24 @@ class Biblioteca:
 
     # Método para buscar livros com base em um critério
     def busca_livros(self, criterio, valor):
+      
         livros = self.carregar_dados(self.livros_arquivo)  # Carrega a lista de livros
         # Filtra os livros que atendem ao critério de busca
-        resultados = [livro for livro in livros if valor.lower() in livro[criterio].lower()]
+
+        livros = self.carregar_dados(self.livros_arquivo)
+        resultados = []
+
+        if criterio.lower() == "título":
+            criterio = "titulo"
+
+            for livro in livros:
+                similaridade = difflib.SequenceMatcher(None, valor.lower(), livro[criterio].lower()).ratio()
+
+                if similaridade >= 0.3:
+                    resultados.append(livro)
+        else:
+            resultados = [livro for livro in livros if valor.lower() in livro[criterio].lower()]
+
         if resultados:
             # Cria uma mensagem com os resultados da busca
             msg = "\n".join([f"{livro['titulo']} - {livro['autor']} - {livro['categoria']}" for livro in resultados])
